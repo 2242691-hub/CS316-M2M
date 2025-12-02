@@ -11,9 +11,9 @@
 <body>
 
     <div class="container driver-container">
-        
+       
         <div class="driver-header">
-            <i class="fas fa-bars menu-icon"></i>
+            <i class="fas fa-bars menu-icon clickable"></i>
             <div class="logo-placeholder small-header-logo">
                 <i class="fas fa-layer-group logo-icon" style="font-size: 24px;"></i> 
                 <div class="logo-text">
@@ -21,57 +21,152 @@
                     <p style="font-size: 6px;">SHUTTLE BRAVO</p>
                 </div>
             </div>
-            <div class="notification-icon">
+            <div class="notification-icon clickable" onclick="alert('No new notifications')">
                 <i class="fas fa-bell"></i>
                 <span class="dot"></span>
             </div>
         </div>
 
         <div class="trip-card gray-card">
-            <h3 class="card-title">Current Trip</h3>
-            <p class="sub-text">Bus: M2M-007</p>
-            <p class="sub-text">Route: Main Campus - Library Loop</p>
+            <div class="card-header-row">
+                <h3 class="card-title">Current Trip</h3>
+                <span class="live-badge">LIVE</span>
+            </div>
             
+            <p class="sub-text"><strong>Bus:</strong> M2M-007</p>
+            <p class="sub-text"><strong>Route:</strong> Main Campus - Library Loop</p>
+           
             <div class="booking-status">
-                <span class="label">Booked:</span>
-                <span class="count">28/30</span>
+                <span class="label">Passenger Count</span>
+                <span class="count" id="passenger-count">28/30</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 93%;"></div>
+                </div>
             </div>
 
             <div class="time-info">
-                <p>Departure 8:00 AM</p>
-                <p>Arrival Time 8:30 AM</p>
+                <div class="time-box">
+                    <span>Departure</span>
+                    <strong>8:00 AM</strong>
+                </div>
+                <div class="time-divider"></div>
+                <div class="time-box">
+                    <span>Arrival</span>
+                    <strong>8:30 AM</strong>
+                </div>
             </div>
 
             <div class="status-pills">
-                <button class="pill active">On Route</button>
-                <button class="pill">Delayed</button>
-                <button class="pill">Completed</button>
+                <button class="pill active" id="pill-route" onclick="setStatus('route')">On Route</button>
+                <button class="pill" id="pill-delayed" onclick="setStatus('delayed')">Delayed</button>
+                <button class="pill" id="pill-completed" onclick="setStatus('completed')">Completed</button>
             </div>
 
             <div class="action-buttons">
-                <button class="btn-action red">Start Trip</button>
-                <button class="btn-action red">Report Delay</button>
+                <button class="btn-action red" id="btn-start" onclick="toggleTrip()">Start Trip</button>
+                <button class="btn-action red" onclick="reportDelay()">Report Delay</button>
             </div>
         </div>
 
         <div class="trip-card gray-card">
             <h3 class="card-title">Upcoming Trips</h3>
-            
-            <div class="upcoming-item">
-                <p class="trip-details">DEC 20 | 10:00 AM | MAIN CAMPUS - MARYHEIGHTS | 15 PASSENGERS</p>
+           
+            <div class="upcoming-item clickable">
+                <div class="date-box">
+                    <span class="month">DEC</span>
+                    <span class="day">20</span>
+                </div>
+                <div class="trip-text">
+                    <strong>10:00 AM</strong>
+                    <span>Main Campus - Maryheights</span>
+                    <small>15 Passengers</small>
+                </div>
             </div>
-            <div class="divider-black"></div>
             
-            <div class="upcoming-item">
-                <p class="trip-details">DEC 29 | 12:30 PM | MAIN CAMPUS - MARYHEIGHTS | 40 PASSENGERS</p>
+            <div class="divider-black"></div>
+           
+            <div class="upcoming-item clickable">
+                <div class="date-box">
+                    <span class="month">DEC</span>
+                    <span class="day">29</span>
+                </div>
+                <div class="trip-text">
+                    <strong>12:30 PM</strong>
+                    <span>Main Campus - Maryheights</span>
+                    <small>40 Passengers</small>
+                </div>
             </div>
 
-            <button class="btn-action full-width warning">
+            <button class="btn-action full-width warning" onclick="reportAccident()">
                 <i class="fas fa-triangle-exclamation"></i> Report Accident
             </button>
         </div>
 
     </div>
+
+    <script>
+        let isTripStarted = false;
+
+        // Function to handle Status Pills
+        function setStatus(status) {
+            // Reset all pills
+            document.querySelectorAll('.pill').forEach(pill => {
+                pill.classList.remove('active', 'status-delayed', 'status-completed');
+            });
+
+            // Activate specific pill with color
+            if (status === 'route') {
+                document.getElementById('pill-route').classList.add('active');
+            } else if (status === 'delayed') {
+                const pill = document.getElementById('pill-delayed');
+                pill.classList.add('active', 'status-delayed');
+            } else if (status === 'completed') {
+                const pill = document.getElementById('pill-completed');
+                pill.classList.add('active', 'status-completed');
+                // Also reset the start button if completed
+                document.getElementById('btn-start').innerText = "Start Trip";
+                document.getElementById('btn-start').style.backgroundColor = "#cc0000";
+                isTripStarted = false;
+            }
+        }
+
+        // Function to Start/End Trip
+        function toggleTrip() {
+            const btn = document.getElementById('btn-start');
+            
+            if (!isTripStarted) {
+                // Start the trip
+                btn.innerText = "End Trip";
+                btn.style.backgroundColor = "#111"; // Turn black to indicate stop action
+                setStatus('route'); // Auto-select "On Route"
+                alert("Trip Started: Passengers have been notified.");
+                isTripStarted = true;
+            } else {
+                // End the trip
+                btn.innerText = "Start Trip";
+                btn.style.backgroundColor = "#cc0000"; // Back to red
+                setStatus('completed'); // Auto-select "Completed"
+                alert("Trip Ended.");
+                isTripStarted = false;
+            }
+        }
+
+        function reportDelay() {
+            const minutes = prompt("How many minutes is the delay?");
+            if (minutes) {
+                setStatus('delayed');
+                alert(`Delay of ${minutes} minutes reported to Admin.`);
+            }
+        }
+
+        function reportAccident() {
+            const confirmAction = confirm("ARE YOU SURE?\nThis will alert the Admin and Emergency Services immediately.");
+            if (confirmAction) {
+                alert("Emergency Alert Sent! Help is on the way.");
+                // In a real app, this would send a GPS signal
+            }
+        }
+    </script>
 
 </body>
 </html>
