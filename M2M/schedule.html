@@ -33,45 +33,53 @@
 
         <div class="action-row">
             <h3>Create new Schedule</h3>
-            <button class="btn-save">Save Schedule</button>
+            <button class="btn-save" onclick="saveSchedule()">Save Schedule</button>
         </div>
 
-        <form class="schedule-form">
+        <form class="schedule-form" onsubmit="event.preventDefault();">
             
             <div class="form-group-schedule">
                 <label>Route</label>
-                <div class="gray-input-box">
-                    Select Route: Main Campus - Library Loop
-                </div>
+                <select class="gray-input-box custom-select" id="route-select">
+                    <option value="Main-Library">Main Campus - Library Loop</option>
+                    <option value="Maryheights-Main">Maryheights - Main Campus</option>
+                    <option value="Navy-Main">Navy Base - Main Campus</option>
+                    <option value="Bakakeng-Main">Bakakeng - Main Campus</option>
+                </select>
             </div>
 
             <div class="form-group-schedule">
                 <label>Departure Time</label>
-                <div class="gray-input-box flex-between">
-                    <span>Arrival Time</span>
-                    <i class="far fa-clock"></i>
+                <div class="input-wrapper-time">
+                    <input type="time" class="gray-input-box" id="time-input">
                 </div>
             </div>
 
             <div class="form-group-schedule">
                 <label>Days of Week</label>
                 <div class="days-list">
-                    <div class="day-option">Mon - Wed</div>
-                    <div class="day-option">Thurs - Fri</div>
-                    <div class="day-option">Sat - Sunday</div>
+                    <div class="day-option" onclick="selectDay(this)">Mon - Wed</div>
+                    <div class="day-option" onclick="selectDay(this)">Thurs - Fri</div>
+                    <div class="day-option" onclick="selectDay(this)">Sat - Sunday</div>
                 </div>
             </div>
 
             <div class="form-group-schedule">
                 <label>Assign Driver</label>
-                <input type="text" class="gray-input-field" placeholder="">
-                <input type="text" class="gray-input-field" placeholder="" style="margin-top: 10px;">
+                <input type="text" class="gray-input-field" list="drivers" placeholder="Primary Driver">
+                <input type="text" class="gray-input-field" list="drivers" placeholder="Backup Driver" style="margin-top: 10px;">
+                
+                <datalist id="drivers">
+                    <option value="Juan Dela Cruz">
+                    <option value="Pedro Penduko">
+                    <option value="Maria Clara">
+                </datalist>
             </div>
 
             <div class="form-group-schedule flex-between notify-row">
                 <label style="margin-bottom: 0;">Notify Affected User</label>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" checked>
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -79,6 +87,33 @@
         </form>
 
     </div>
+
+    <script>
+        // Function to handle Day Selection
+        function selectDay(element) {
+            // Remove 'active' class from all days first (Single Select mode)
+            // If you want Multi-select, remove this loop
+            const allDays = document.querySelectorAll('.day-option');
+            allDays.forEach(day => day.classList.remove('active'));
+
+            // Add 'active' class to the clicked element
+            element.classList.add('active');
+        }
+
+        // Function to simulate Saving
+        function saveSchedule() {
+            const route = document.getElementById('route-select').value;
+            const time = document.getElementById('time-input').value;
+            
+            if(time === "") {
+                alert("Please select a departure time.");
+            } else {
+                alert("Schedule Saved!\nRoute: " + route + "\nTime: " + time);
+                // Redirect back to admin page after saving
+                window.location.href = "admin.html";
+            }
+        }
+    </script>
 
 </body>
 </html>
