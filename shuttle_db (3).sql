@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 05, 2025 at 05:18 PM
+-- Generation Time: Dec 05, 2025 at 05:23 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -38,18 +38,16 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `accounts`
 --
 
 INSERT INTO `accounts` (`id`, `name`, `email`, `password`, `role`, `created_at`, `updated_at`) VALUES
-(5, 'renzo', 'renzoj156@gmail.com', '$2y$10$S4yzI73Lry4PEmpH4xu.au4su1Uw/YacziPloXqpZDG6ClI/ywEge', 'admin', '2025-12-03 13:31:35', '2025-12-03 14:43:11'),
-(8, 'Lmao', 'lmao@lmao.com', '$2y$10$2yL5xIC5cEjbanPYOIU.fO5pMqh4RTkTfMuOkSp4xZSR/4rUlcWFm', 'user', '2025-12-05 12:22:00', '2025-12-05 12:22:00'),
-(4, 'asd', 'asd@asd.com', '123123123', 'admin', '2025-12-03 13:00:10', '2025-12-03 17:16:14'),
-(6, 'Driver Michael', 'driver.mike@gmail.com', 'password123', 'driver', '2025-12-03 15:00:18', '2025-12-03 15:00:18'),
-(7, 'Rezo', 'wawt@wawt.com', '$2y$10$BR02pAo1iWqUCCjV/blkLubKAIR.RdsTM1Y1hBUShUoGnhpazS1z2', 'user', '2025-12-03 16:04:58', '2025-12-03 16:04:58');
+(1, 'Driver', 'driver@gmail.com', 'driver', 'driver', '2025-12-05 17:22:34', '2025-12-05 17:22:34'),
+(2, 'Admin', 'admin@gmail.com', 'admin', 'admin', '2025-12-05 17:22:34', '2025-12-05 17:22:34'),
+(3, 'User', 'user@gmail.com', 'user', 'user', '2025-12-05 17:22:34', '2025-12-05 17:22:34');
 
 -- --------------------------------------------------------
 
@@ -66,22 +64,6 @@ CREATE TABLE IF NOT EXISTS `activity_logs` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `activity_logs`
---
-
-INSERT INTO `activity_logs` (`id`, `description`, `icon`, `created_at`) VALUES
-(1, 'New schedule created', 'fa-calendar-plus', '2025-12-06 00:33:12'),
-(2, 'New schedule created', 'fa-calendar-plus', '2025-12-06 00:33:53'),
-(3, 'New Announcement created', 'fa-bullhorn', '2025-12-06 00:37:44'),
-(4, 'Created schedule for Driver #6 on 2025-12-12', 'fa-calendar-plus', '2025-12-06 00:52:42'),
-(5, 'Created schedule for Driver #6 on 2025-12-06', 'fa-calendar-plus', '2025-12-06 00:53:51'),
-(6, 'Created schedule for Driver #6 on 2025-12-06', 'fa-calendar-plus', '2025-12-06 00:59:47'),
-(7, 'Payement Verified', 'fa-calendar-plus', '2025-12-06 01:02:12'),
-(8, 'Created schedule for Driver #6 on 2025-12-06', 'fa-calendar-plus', '2025-12-06 01:02:45'),
-(9, 'Created schedule for Driver #6 on 2025-12-06', 'fa-calendar-plus', '2025-12-06 01:05:09'),
-(10, 'Created schedule for Driver #6 on 2025-12-06', 'fa-calendar-plus', '2025-12-06 01:06:05');
-
 -- --------------------------------------------------------
 
 --
@@ -95,16 +77,6 @@ CREATE TABLE IF NOT EXISTS `announcements` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `announcements`
---
-
-INSERT INTO `announcements` (`id`, `message`, `created_at`) VALUES
-(1, 'wawaw', '2025-12-06 00:26:39'),
-(2, 'wawawawa', '2025-12-06 00:29:57'),
-(3, 'wawaw', '2025-12-06 00:33:53'),
-(4, 'waw', '2025-12-06 00:37:44');
 
 -- --------------------------------------------------------
 
@@ -127,13 +99,6 @@ CREATE TABLE IF NOT EXISTS `bookings` (
   UNIQUE KEY `user_id` (`user_id`,`driver_schedule_id`),
   KEY `driver_schedule_id` (`driver_schedule_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `bookings`
---
-
-INSERT INTO `bookings` (`id`, `user_id`, `driver_schedule_id`, `pickup_location`, `dropoff_location`, `status`, `payment_status`, `created_at`, `updated_at`) VALUES
-(15, 7, 35, 'SLU Main', 'SLU Maryheights', 'accepted', 'paid', '2025-12-05 17:05:24', '2025-12-05 17:05:24');
 
 -- --------------------------------------------------------
 
@@ -159,14 +124,6 @@ CREATE TABLE IF NOT EXISTS `driver_schedule` (
   KEY `shuttle_id` (`shuttle_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `driver_schedule`
---
-
-INSERT INTO `driver_schedule` (`id`, `driver_id`, `shuttle_id`, `route_id`, `shift_date`, `start_time`, `end_time`, `max_capacity`, `status`, `created_at`, `updated_at`) VALUES
-(36, 6, 2, 8, '2025-12-06', '01:09:00', '00:00:00', 0, 'completed', '2025-12-05 17:06:05', '2025-12-05 17:11:21'),
-(35, 6, 1, 7, '2025-12-06', '01:06:00', '00:00:00', 0, 'completed', '2025-12-05 17:05:09', '2025-12-05 17:05:41');
-
 -- --------------------------------------------------------
 
 --
@@ -182,16 +139,6 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `notifications`
---
-
-INSERT INTO `notifications` (`id`, `message`, `type`, `is_read`, `created_at`) VALUES
-(51, 'Trip completed by Driver Michael', 'info', 0, '2025-12-05 17:11:21'),
-(50, 'Trip started by Driver Michael', 'info', 0, '2025-12-05 17:11:20'),
-(49, 'Trip completed by Driver Michael', 'info', 0, '2025-12-05 17:05:41'),
-(48, 'Trip started by Driver Michael', 'info', 0, '2025-12-05 17:05:33');
 
 -- --------------------------------------------------------
 
@@ -210,13 +157,6 @@ CREATE TABLE IF NOT EXISTS `payments` (
   PRIMARY KEY (`id`),
   KEY `booking_id` (`booking_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `payments`
---
-
-INSERT INTO `payments` (`id`, `booking_id`, `amount`, `payment_date`, `payment_method`, `created_at`) VALUES
-(12, 15, 25.00, '2025-12-05 17:05:24', 'online', '2025-12-05 17:05:24');
 
 -- --------------------------------------------------------
 
