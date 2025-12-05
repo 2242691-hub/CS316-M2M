@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M2M Admin - Schedule</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-text">
+                <h1 style="font-size: 24px; color: #E02B2B; font-style: italic;">M2M</h1>
+                <p style="font-size: 8px; font-weight: 700;">SHUTTLE BRAVO</p>
+            </div>
+            <i class="fas fa-times close-btn" id="close-sidebar"></i>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="admin.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="schedule.html" class="active"><i class="far fa-calendar-alt"></i> Manage Schedules</a></li>
+            <li><a href="manage_shuttles.html"><i class="fas fa-bus"></i> Manage Shuttles</a></li>
+            <li><a href="manage_drivers.html"><i class="fas fa-users"></i> Manage Drivers</a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="login.html" class="logout-link btn-logout" style="color: #E02B2B; font-weight: 600; cursor: pointer; text-decoration: none;">
+                <i class="fas fa-sign-out-alt" style="color: #E02B2B;"></i> Log Out
+            </a>
+        </div>
+    </div>
+
+    <div class="container driver-container">
+        
+        <div class="schedule-header-top">
+            <i class="fas fa-bars menu-icon" id="menu-btn" style="cursor: pointer; font-size: 24px;"></i>
+            
+            <div class="logo-placeholder small-header-logo">
+                <div class="logo-text">
+                    <h1 style="font-size: 20px;">M2M</h1>
+                    <p style="font-size: 6px;">SHUTTLE BRAVO</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <h3>Create new Schedule</h3>
+            <button class="btn-save" id="btn-save-schedule">Save Schedule</button>
+        </div>
+
+        <form class="schedule-form" onsubmit="event.preventDefault();">
+            <div class="form-group-schedule">
+                <label>Target Route</label>
+                <select class="gray-input-box custom-select" id="route-select"><option>Loading...</option></select>
+            </div>
+
+            <div class="form-group-schedule">
+                <label>Shuttle Bus</label>
+                <select class="gray-input-box custom-select" id="shuttle-select"><option>Loading...</option></select>
+            </div>
+
+            <div class="form-group-schedule">
+                <label>Assign Driver</label>
+                <select class="gray-input-box custom-select" id="driver-select"><option>Loading...</option></select>
+            </div>
+
+            <div class="form-group-schedule">
+                <label>Date</label>
+                <div class="input-wrapper-time">
+                    <input type="date" class="gray-input-box" id="date-input">
+                </div>
+            </div>
+
+            <div class="form-group-schedule">
+                <label>Departure Time</label>
+                <div class="input-wrapper-time">
+                    <input type="time" class="gray-input-box" id="time-input">
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/admin_schedule.js"></script>
+
+    <script>
+        // Brackets added to create a local scope and prevent variable conflicts
+        {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const menuBtn = document.getElementById('menu-btn'); // Matched ID
+            const closeBtn = document.getElementById('close-sidebar');
+
+            if(menuBtn) {
+                menuBtn.addEventListener('click', () => {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
+                });
+            }
+
+            if(closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+
+            if(overlay) {
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>

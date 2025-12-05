@@ -1,26 +1,61 @@
-// assets/js/auth.js
-
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- LOGIN LOGIC ---
-    const loginBtn = document.getElementById('btn-login');
+    // --- 1. GATEKEEPER LOGIC (Redirects) ---
+    const currentUser = JSON.parse(localStorage.getItem('m2m_user'));
     
-    if (loginBtn) {
-        loginBtn.addEventListener('click', async (e) => {
-            e.preventDefault(); // Stop default button behavior
+    // Determine if we are on a "Public" page (Login or Signup)
+    // We check for specific elements that only exist on these pages
+    const isLoginPage = !!document.getElementById('loginForm');
+    const isSignupPage = !!document.getElementById('signupForm');
+    const isPublicPage = isLoginPage || isSignupPage;
 
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const btnOriginalText = loginBtn.innerText;
+    // CASE A: User is logged in, but tries to go to Login/Signup -> Redirect to Dashboard
+    if (currentUser && isPublicPage) {
+        if (currentUser.role === 'admin') window.location.href = 'admin.html';
+        else if (currentUser.role === 'driver') window.location.href = 'driver.html';
+        else window.location.href = 'map.html';
+    }
 
-            if (!email || !password) {
-                alert("Please enter both email and password.");
-                return;
+    // CASE B: User is NOT logged in, but tries to go to a Protected Page -> Redirect to Login
+    // (If we are NOT on a public page and NOT logged in)
+    if (!currentUser && !isPublicPage) {
+        window.location.href = 'index.html';
+    }
+
+
+    // --- 2. PASSWORD TOGGLE (Peek) ---
+    const toggleIcons = document.querySelectorAll('.password-toggle');
+    toggleIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            const wrapper = this.closest('.input-wrapper');
+            const input = wrapper.querySelector('input');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.classList.replace('fa-eye-slash', 'fa-eye');
+            } else {
+                input.type = 'password';
+                this.classList.replace('fa-eye', 'fa-eye-slash');
             }
+        });
+    });
 
-            // UI Feedback (Loading)
-            loginBtn.innerText = "Logging in...";
-            loginBtn.style.opacity = "0.7";
+
+    // --- 3. MODALS (TOS & Privacy) ---
+    setupModal('link-tos', 'tos-modal', 'close-tos');
+    setupModal('link-pp', 'pp-modal', 'close-pp');
+
+
+    // --- 4. HANDLE LOGIN ---
+    if (isLoginPage) {
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            btn.innerText = 'Logging in...';
+            btn.disabled = true;
 
             try {
                 const response = await fetch('api/auth/login.php', {
@@ -28,97 +63,92 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
+                const result = await response.json();
 
-                const data = await response.json();
-
-                if (data.success) {
-                    // 1. Save user info to LocalStorage (Browser Memory)
-                    localStorage.setItem('m2m_user', JSON.stringify(data.user));
+                if (result.success) {
+                    localStorage.setItem('m2m_user', JSON.stringify(result.user));
                     
-                    // 2. Redirect based on Role
-                    if (data.user.role === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else if (data.user.role === 'driver') {
-                        window.location.href = 'driver.html';
-                    } else {
-                        window.location.href = 'profile.html'; // Default for passengers
-                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Welcome back!',
+                        text: 'Redirecting...',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload(); // Reload triggers the Gatekeeper check above
+                    });
                 } else {
-                    alert(data.message || "Login failed");
-                    loginBtn.innerText = btnOriginalText;
-                    loginBtn.style.opacity = "1";
+                    Swal.fire('Error', result.message, 'error');
+                    btn.innerText = 'Log in';
+                    btn.disabled = false;
                 }
-
             } catch (error) {
-                console.error('Error:', error);
-                alert("Server error. Please try again later.");
-                loginBtn.innerText = btnOriginalText;
-                loginBtn.style.opacity = "1";
+                console.error(error);
+                Swal.fire('Error', 'Server connection failed', 'error');
+                btn.innerText = 'Log in';
+                btn.disabled = false;
             }
         });
     }
 
-    // --- SIGNUP LOGIC ---
-    // Note: We look for the form itself in signup.html
-    const signupForm = document.querySelector('form'); 
-    
-    // We only run this if we are actually on the signup page (checks if 'name' input exists)
-    const nameInput = document.getElementById('name');
-    
-    if (signupForm && nameInput) {
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Stop page reload
 
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const submitBtn = signupForm.querySelector('button[type="submit"]');
-
-            // Simple Validation
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return;
-            }
-
-            if (password.length < 8) {
-                alert("Password must be at least 8 characters.");
-                return;
-            }
-
-            // UI Feedback
-            const originalBtnText = submitBtn.innerText;
-            submitBtn.innerText = "Creating Account...";
+    // --- 5. HANDLE SIGNUP ---
+    if (isSignupPage) {
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
             
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm-password').value;
+
+            if (password !== confirm) {
+                Swal.fire('Error', 'Passwords do not match', 'warning');
+                return;
+            }
+
             try {
                 const response = await fetch('api/auth/signup.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, email, password })
                 });
+                const result = await response.json();
 
-                const data = await response.json();
-
-                if (data.success) {
-                    alert("Account created! Please log in.");
-                    window.location.href = 'index.html';
+                if (result.success) {
+                    Swal.fire('Success', 'Account created! Please log in.', 'success').then(() => {
+                        window.location.href = 'index.html';
+                    });
                 } else {
-                    alert(data.message);
-                    submitBtn.innerText = originalBtnText;
+                    Swal.fire('Error', result.message, 'error');
                 }
-
             } catch (error) {
-                console.error('Error:', error);
-                alert("Something went wrong. check console.");
-                submitBtn.innerText = originalBtnText;
+                console.error(error);
+                Swal.fire('Error', 'Server connection failed', 'error');
             }
         });
     }
 });
 
-// --- HELPER: LOGOUT FUNCTION ---
-// You can call logout() from your profile page later
-function logout() {
-    localStorage.removeItem('m2m_user');
-    window.location.href = 'index.html';
+function setupModal(triggerId, modalId, closeId) {
+    const trigger = document.getElementById(triggerId);
+    const modal = document.getElementById(modalId);
+    const closeBtn = document.getElementById(closeId);
+
+    if (trigger && modal) {
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = 'flex';
+        });
+    }
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+    if (modal) {
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    }
 }

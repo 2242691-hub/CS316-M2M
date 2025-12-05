@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M2M Shuttle Bravo - Create Account</title>
-    
     <link rel="stylesheet" href="assets/style.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -25,35 +22,31 @@
         </div>
 
         <div class="login-card">
-            <h2 class="login-header">Create an <br>Account</h2>
+            <h2 class="login-header">Create Account</h2>
 
-            <form action="#">
+            <form id="signupForm">
                 <div class="form-group">
-                    <label for="name">What should we call you?</label>
-                    <input type="text" id="name" name="name" placeholder="Enter your profile name">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
                 </div>
 
                 <div class="form-group">
-                    <label for="email">What is your email?</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email address">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="name@example.com">
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Create a password</label>
+                    <label for="password">Create Password</label>
                     <div class="input-wrapper">
-                        <input type="password" id="password" name="password" placeholder="Enter your password">
+                        <input type="password" id="password" name="password" required>
                         <i class="fa-solid fa-eye-slash password-toggle"></i>
                     </div>
                 </div>
 
-                <p class="password-hint">
-                    Use 8 or more characters with a mix of letters, numbers & symbols
-                </p>
-
                 <div class="form-group">
-                    <label for="confirm-password">Confirm password</label>
+                    <label for="confirm-password">Confirm Password</label>
                     <div class="input-wrapper">
-                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password">
+                        <input type="password" id="confirm-password" required>
                         <i class="fa-solid fa-eye-slash password-toggle"></i>
                     </div>
                 </div>
@@ -62,7 +55,7 @@
 
                 <div class="legal-text">
                     By creating an account, you agree to the<br>
-                    <a href="#">Terms of use</a> and <a href="#">Privacy Policy</a>.
+                    <a href="#" id="link-tos">Terms of use</a> and <a href="#" id="link-pp">Privacy Policy</a>.
                 </div>
 
                 <div class="signup-text">
@@ -71,6 +64,40 @@
             </form>
         </div>
     </div>
-<script src="assets/js/auth.js"></script>
+
+  <!-- TERMS OF SERVICE MODAL -->
+    <div id="tos-modal" class="custom-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-tos">&times;</span>
+            <div class="widget-header" style="margin-top: 0;">
+                <h3>Terms of Use</h3>
+            </div>
+            <div style="max-height: 300px; overflow-y: auto; text-align: left; color: #666; font-size: 14px; line-height: 1.6;">
+                <p><strong>1. Acceptance of Terms</strong><br>By accessing M2M Shuttle Bravo, you agree to be bound by these Terms of Use.</p>
+                <p><strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.</p>
+                <p><strong>3. Service Usage</strong><br>The shuttle service is provided "as is". We reserve the right to modify or discontinue the service at any time.</p>
+                <p><strong>4. Code of Conduct</strong><br>Users must treat drivers and other passengers with respect. Any abusive behavior may result in account suspension.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRIVACY POLICY MODAL -->
+    <div id="pp-modal" class="custom-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-pp">&times;</span>
+            <div class="widget-header" style="margin-top: 0;">
+                <h3>Privacy Policy</h3>
+            </div>
+            <div style="max-height: 300px; overflow-y: auto; text-align: left; color: #666; font-size: 14px; line-height: 1.6;">
+                <p><strong>1. Information Collection</strong><br>We collect information you provide directly to us, such as your name, email address, and trip history.</p>
+                <p><strong>2. Use of Information</strong><br>We use your information to provide, maintain, and improve our services, and to communicate with you.</p>
+                <p><strong>3. Data Security</strong><br>We implement reasonable security measures to protect your personal information.</p>
+                <p><strong>4. Contact Us</strong><br>If you have questions about this policy, please contact support.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/auth.js"></script>
 </body>
 </html>
