@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
+        
         // 1. Initial Check
         checkUserBookingStatus();
 
@@ -123,7 +124,7 @@ async function fetchActiveSchedules() {
         const json = await response.json();
 
         if(json.success) {
-            allSchedules = json.data;
+            allSchedules = json.data;      
             populateRouteDropdown(allSchedules);
         }
     } catch (e) {

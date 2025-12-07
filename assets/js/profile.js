@@ -21,6 +21,7 @@ async function loadProfileData() {
     document.getElementById('edit-email').value = user.email;
 }
 
+
 // 2. Setup Modals
 function setupProfileModals() {
     const editModal = document.getElementById('edit-profile-modal');

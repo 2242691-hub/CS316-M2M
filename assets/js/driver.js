@@ -291,8 +291,11 @@ function reportDelay() {
     }
 }
 
+// driver.js
+
+// driver.js
+
 async function loadNotifications() {
-    // ... use your existing notification code ...
     const list = document.getElementById('notification-list');
     if (!list) return;
 
@@ -302,25 +305,49 @@ async function loadNotifications() {
 
         if (json.success) {
             const notifs = json.data;
+            let unreadCount = 0; 
+
             if (notifs.length === 0) {
                 list.innerHTML = '<li class="feed-item"><p>No new notifications.</p></li>';
                 return;
             }
 
-            list.innerHTML = notifs.map(item => `
-                <li class="feed-item">
-                    <div class="feed-icon" style="background:#eef2ff; color:#E02B2B;">
-                        <i class="fas fa-bullhorn"></i>
-                    </div>
-                    <div class="feed-content">
-                        <p>${item.message}</p>
-                        <span>${item.created_at}</span>
-                    </div>
-                </li>
-            `).join('');
+            list.innerHTML = notifs.map(item => {
+                const isUnread = item.is_read === 0;
+                if (isUnread) unreadCount++; 
+
+                const unreadClass = isUnread ? 'unread' : '';
+                
+                // Determine icon and color based on 'type'
+                let iconClass = 'fas fa-bullhorn'; // Default icon
+                let iconColor = '#E02B2B';        // Default color
+                let backgroundColor = '#eef2ff';
+
+                if (item.type === 'announcement') {
+                    // Use a different icon for announcements
+                    iconClass = 'fas fa-megophone'; 
+                    iconColor = '#007bff'; // Blue for official announcements
+                    backgroundColor = '#e6f3ff';
+                }
+                // You can add more 'else if' blocks for 'type' such as 'warning', 'system', etc.
+
+                return `
+                    <li class="feed-item ${unreadClass}">
+                        <div class="feed-icon" style="background:${backgroundColor}; color:${iconColor};">
+                            <i class="${iconClass}"></i>
+                        </div>
+                        <div class="feed-content">
+                            <p><strong>[Announcement]</strong> ${item.message}</p>
+                            <span>${item.created_at}</span>
+                        </div>
+                    </li>
+                `;
+            }).join('');
             
             const dot = document.querySelector('.notification-icon .dot');
-            if(dot) dot.style.display = 'block';
+            if (dot) {
+                dot.style.display = unreadCount > 0 ? 'block' : 'none';
+            }
         }
     } catch (error) {
         console.error("Error loading notifications", error);
