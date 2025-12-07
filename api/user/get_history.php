@@ -26,13 +26,14 @@ $sql = "SELECT
         FROM bookings b
         JOIN driver_schedule s ON b.driver_schedule_id = s.id
         JOIN shuttles sh ON s.shuttle_id = sh.id
-        LEFT JOIN routes r ON sh.route_id = r.id
+        LEFT JOIN routes r ON s.route_id = r.id  
         WHERE b.user_id = '$user_id'
         ORDER BY s.shift_date DESC, s.start_time DESC";
 
 $result = $conn->query($sql);
 
 if (!$result) {
+    // Return JSON error so frontend can handle it gracefully
     echo json_encode(["success" => false, "message" => "Database Error: " . $conn->error]);
     exit();
 }
