@@ -76,7 +76,7 @@ async function deleteDriver(id) {
     if(!confirm("Are you sure you want to delete this driver? They will no longer be able to log in.")) return;
 
     try {
-        const response = await fetch('api/admin/delete_driver.php', {
+        const response = await fetch('api/admin/delete_drivers.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: id })
